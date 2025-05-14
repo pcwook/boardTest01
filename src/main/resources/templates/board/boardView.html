@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 상세</title>
+</head>
+<body>
+<h1>게시글 상세</h1>
+<div>
+  <label>ID:</label>
+  <span th:text="${board.id}"></span>
+</div>
+<div>
+  <label>제목:</label>
+  <span th:text="${board.title}"></span>
+</div>
+<div>
+  <label>작성자:</label>
+  <span th:text="${board.writer}"></span>
+</div>
+<div>
+  <label>내용:</label><br>
+  <div th:text="${board.content}" style="white-space: pre-line;"></div>
+</div>
+<div>
+  <label>조회수:</label>
+  <span th:text="${board.viewCount}"></span>
+</div>
+<div>
+  <label>작성일:</label>
+  <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+</div>
+<div>
+  <label>수정일:</label>
+  <span th:text="${#temporals.format(board.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+</div>
+
+<div>
+  <a th:href="@{/board/modify(id=${board.id})}">수정</a>
+  <a th:href="@{/board/delete(id=${board.id})}" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+  <a th:href="@{/board/list}">목록으로</a>
+</div>
+
+<h2>댓글</h2>
+<form action="/comment/write" method="post">
+  <input type="hidden" name="boardId" th:value="${board.id}">
+  <div>
+    <label for="writer">작성자:</label>
+    <input type="text" id="writer" name="writer" required>
+  </div>
+  <div>
+    <label for="content">내용:</label>
+    <textarea id="content" name="content" rows="3" required></textarea>
+  </div>
+  <button type="submit">댓글 작성</button>
+</form>
+
+<div th:each="comment : ${comments}">
+  <hr>
+  <div>
+    <span>작성자: <span th:text="${comment.writer}"></span></span>
+    <span>작성일: <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></span></span>
+    <a th:href="@{/comment/delete(id=${comment.id}, boardId=${board.id})}"
+       onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+  </div>
+  <div th:text="${comment.content}" style="white-space: pre-line;"></div>
+</div>
+</body>
+</html>
